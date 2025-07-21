@@ -6026,6 +6026,49 @@ Tab:AddToggle({
     end
 })
 
+local function clickNormally(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        fireclickdetector(clickDetector)
+    end
+end
+
+-- Function to Lag Game with Laptop
+local function lagarJogoLan(laptopPath, maxTeleports)
+    if lanPath then
+        local teleportCount = 0
+        while teleportCount < maxTeleports and toggles.LagLan do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lanPath.CFrame
+            clickNormally(lanPath)
+            teleportCount = teleportCount + 1
+            wait(0.0001)
+        end
+    else
+        warn("Lan não encontrado.")
+    end
+end
+
+-- Lag Lan Toggle
+Tab:AddToggle({
+    Name = "Lag com Lanterna (trava muito)",
+    Default = false,
+    Callback = function(state)
+        toggles.LagLan = state
+        if state then
+            local lanPath = workspace:FindFirstChild("WorkspaceCom"):FindFirstChild("001_GiveTools"):FindFirstChild("FlashLight")
+            if lanPath then
+                spawn(function()
+                    lagarJogoLan(lanPath, 999999)
+                end)
+            else
+                warn("Lan não encontrado.")
+            end
+        else
+            print("Lag com Laptop desativado.")
+        end
+    end
+})
+
 -- Lag Laptop Section
 local Section = Tab:AddSection({
     Name = "Lag com Laptop"
