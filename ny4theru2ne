@@ -830,7 +830,7 @@ InfoTab:AddDiscordInvite({
     Invite = "https://discord.gg/ruEdVGsthy",
 })
 InfoTab:AddSection({ "Informações do Script" })
-InfoTab:AddParagraph({ "Owner / Developer:", "Wx (TikTok: @sou.wx, Discord: @sou.wx)" })
+InfoTab:AddParagraph({ "Wx (Discord: @sou.wx, Roblox WxDeveloper e SouWX_tkk)" })
 InfoTab:AddParagraph({ "Colaborações:", "Lolyta, Dragon, Why, Galaxy, 7, Venom, Luscaa, Icy" })
 InfoTab:AddParagraph({ "Você está usando:", "Nytherune Hub" })
 InfoTab:AddParagraph({"O script é open source olhe nosso github!"})
