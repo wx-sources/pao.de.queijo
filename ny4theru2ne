@@ -1542,7 +1542,26 @@ RunService.Heartbeat:Connect(function(dt)
     PCar:SetPrimaryPartCFrame(cf)
 end)
 end
-}) 
+})
+
+TrollTab:AddButton({
+    Name = "[🛑] Desativar Tornado e Remover Veículo",
+    Description = "Cancela o tornado e deleta seu navio.",
+    Callback = function()
+        -- Tenta remover o veículo via RemoteEvent
+        local success, err = pcall(function()
+            local args = { "DeleteAllVehicles" }
+            game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Ca1r"):FireServer(unpack(args))
+        end)
+
+        if not success then
+            warn("Falha ao deletar veículos:", err)
+        else
+            print("[Nytherune Hub] Tornado finalizado e veículos deletados.")
+        end
+    end
+})
+
 TrollTab:AddSection({ "Puxar Parts" })
 TrollTab:AddButton({
     Name = "Puxar Parts",
