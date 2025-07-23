@@ -606,7 +606,7 @@ local function KickLocalPlayer(message)
 	ErrorTitle.Size = UDim2.new(1, 0, 0, 28)
 	ErrorTitle.ZIndex = 8
 	ErrorTitle.Font = Enum.Font.SourceSansSemibold
-	ErrorTitle.Text = "Disconnected"
+	ErrorTitle.Text = "Desconectado"
 	ErrorTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 	ErrorTitle.TextSize = 25
 
@@ -645,7 +645,7 @@ local function KickLocalPlayer(message)
 	ErrorMessage.Size = UDim2.new(1, 0, 1, -56)
 	ErrorMessage.ZIndex = 8
 	ErrorMessage.Font = Enum.Font.SourceSans
-	ErrorMessage.Text = message or "O jogo detectou arquivos maliciosos. Instale o aplicativo novamente. (Código de erro: 666)"
+	ErrorMessage.Text = message or "Você foi removido pelo Wx enquanto usava o Nytherune. (Código de erro: 134)"
 	ErrorMessage.TextColor3 = Color3.fromRGB(189, 190, 190)
 	ErrorMessage.TextSize = 20
 	ErrorMessage.TextWrapped = true
@@ -675,7 +675,7 @@ local function KickLocalPlayer(message)
 	ButtonText.Size = UDim2.new(1, 0, 1, 0)
 	ButtonText.ZIndex = 8
 	ButtonText.Font = Enum.Font.SourceSans
-	ButtonText.Text = "Leave"
+	ButtonText.Text = "Sair"
 	ButtonText.TextColor3 = Color3.fromRGB(35, 37, 39)
 	ButtonText.TextSize = 20
 
