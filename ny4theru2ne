@@ -834,7 +834,7 @@ InfoTab:AddParagraph({ "Wx (Discord: @sou.wx, Roblox WxDeveloper e SouWX_tkk)" }
 InfoTab:AddParagraph({ "Colaborações:", "Lolyta, Dragon, Why, Galaxy, 7, Venom, Luscaa, Icy" })
 InfoTab:AddParagraph({ "Você está usando:", "Nytherune Hub" })
 InfoTab:AddParagraph({"O script é open source olhe nosso github!"})
-InfoTab:AddParagraph({"Novidades:", "Novo Fling Admin! Apenas chegue perto de jogadores"})
+InfoTab:AddParagraph({"Novidades:", "Novo shutdown em jogadores! Agora eles vão ter glitches enquanto jogam."})
 InfoTab:AddButton({"Versão Experimental", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/spacecomm/refs/heads/main/experimental"))()
 end})
@@ -2495,8 +2495,8 @@ local function playerCorrupt()
     until targetPlayer.Character and targetPlayer.Character.Humanoid and targetPlayer.Character.Humanoid.Sit == true
     task.wait()
     couch.Parent = LocalPlayer.Backpack
-    seat1.CFrame = CFrame.new(Vector3.new(9e15, 9e15, 9e15))
-    seat2.CFrame = CFrame.new(Vector3.new(9e15, 9e15, 9e15))
+    seat1.CFrame = CFrame.new(Vector3.new(0/0, 0/0, 0/0))
+    seat2.CFrame.new(Vector3.new(0/0, 0/0, 0/0))
     couch.Parent = LocalPlayer.Character
     task.wait(0.1)
     couch.Parent = LocalPlayer.Backpack
