@@ -834,7 +834,7 @@ InfoTab:AddParagraph({ "Wx (Discord: @sou.wx, Roblox WxDeveloper e SouWX_tkk)" }
 InfoTab:AddParagraph({ "Colaborações:", "Lolyta, Dragon, Why, Galaxy, 7, Venom, Luscaa, Icy, Shelby" })
 InfoTab:AddParagraph({ "Você está usando:", "Nytherune Hub" })
 InfoTab:AddParagraph({"O script é open source olhe nosso github!"})
-InfoTab:AddParagraph({"Novidades:", "Novo shutdown em jogadores! Agora eles vão ter glitches enquanto jogam."})
+InfoTab:AddParagraph({"Novidades:", "Nova Expansão de Domínio! Agora os jogadores vão bugar e muito!"})
 InfoTab:AddButton({"Versão Experimental", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/spacecomm/refs/heads/main/experimental"))()
 end})
@@ -1594,50 +1594,81 @@ end
 
 TrollTab:AddButton({
     Name = "[❌] Cancelar Expansão de Domínio",
-    Description = "Para o ataque e remove a Expansão de Domínio.",
+    Description = "Remove efeitos, sons, armas e restaura o ambiente.",
     Callback = function()
-        -- Sinaliza para parar loops (supondo que a variável cancelExpansion esteja no escopo global)
+        local Lighting = game:GetService("Lighting")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local Players = game:GetService("Players")
+        local Player = Players.LocalPlayer
+
+        -- Sinaliza para parar loops
         cancelExpansion = true
 
-        -- Para o som em loop (variável global expansionSound)
+        -- Remover modelo "InfiniteVoid"
+        local dominioExistente = workspace:FindFirstChild("InfiniteVoid")
+        if dominioExistente then
+            dominioExistente:Destroy()
+        end
+
+        -- Parar e remover som global (se estiver no modelo)
         if expansionSound then
             expansionSound:Stop()
             expansionSound:Destroy()
             expansionSound = nil
         end
 
-        -- Remove o modelo "InfiniteVoid" criado (variável global expansionModel)
-        if expansionModel and expansionModel.Parent then
-            expansionModel:Destroy()
-            expansionModel = nil
+        -- Remover sons criados no jogador (caso existam múltiplos)
+        local char = Player.Character
+        if char then
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                for _, obj in ipairs(hrp:GetChildren()) do
+                    if obj:IsA("Sound") then
+                        obj:Stop()
+                        obj:Destroy()
+                    end
+                end
+            end
         end
 
-        -- Restaura o Sky original se salvo em originalSky
-        local Lighting = game:GetService("Lighting")
+        -- Restaurar céu original se salvo
         local currentSky = Lighting:FindFirstChildOfClass("Sky")
-        if currentSky then currentSky:Destroy() end
-
+        if currentSky then
+            currentSky:Destroy()
+        end
         if originalSky then
             originalSky.Parent = Lighting
             originalSky = nil
         end
 
-        -- Opcional: mensagem no chat confirmando cancelamento
+        -- Remover armas do inventário
+        local backpack = Player:FindFirstChildOfClass("Backpack")
+        if backpack then
+            for _, tool in ipairs(backpack:GetChildren()) do
+                if tool:IsA("Tool") then
+                    tool:Destroy()
+                end
+            end
+        end
+        -- Remover armas equipadas
+        if char then
+            for _, tool in ipairs(char:GetChildren()) do
+                if tool:IsA("Tool") then
+                    tool:Destroy()
+                end
+            end
+        end
+
+        -- Mensagem no chat
         local TextChatService = game:GetService("TextChatService")
         if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            TextChatService.TextChannels.RBXGeneral:SendAsync("[❌] Expansão de Domínio cancelada.")
+            TextChatService.TextChannels.RBXGeneral:SendAsync("[❌] Expansão de Domínio foi encerrada com sucesso.")
         else
-            print("[❌] Expansão de Domínio cancelada.")
+            print("[❌] Expansão de Domínio foi encerrada com sucesso.")
         end
     end
 })
 
-do -- comeÃ§o do bloco de scripts
-
-TrollTab:AddParagraph({"Script original de Lolyta666"})
-    
-TrollTab:AddParagraph({"Spam de Jato - irreversível!"})
-    
 TrollTab:AddSection({"Spamming de Avião - ✅🙏"})
 
    local Players = game:GetService("Players")
