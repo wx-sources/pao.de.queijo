@@ -1396,6 +1396,291 @@ end)
 toggleBlackHole()
     end
 })
+
+do -- comeÃ§o do bloco de scripts
+
+TrollTab:AddParagraph({"Script original de Lolyta666"})
+    
+TrollTab:AddParagraph({"Spam de Jato - irreversível!"})
+    
+TrollTab:AddSection({"Spamming de Avião - ✅🙏"})
+
+   local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local originalPosition = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+
+-- VariÃ¡veis principais
+local clickDetector = Workspace.WorkspaceCom["001_Airport"].AirportHanger["001_JetCloneButton"].Button.ClickDetector
+local jetStorage = Workspace.WorkspaceCom["001_Airport"].AirportHanger["001_JetStorage"]
+local buttonPosition = Vector3.new(498.99, -19.52, 278.73)
+local targetPosition = Vector3.new(-26.20, 98.02, 17.45)
+local voidPosition = Vector3.new(0, -1000, 0)
+local selectedPlayer = nil
+
+local running1 = false
+local running2 = false
+local loopConnection1, loopConnection2
+
+-- FunÃ§Ã£o para encontrar a primeira parte fÃ­sica do jato
+local function getFirstPart(jet)
+    for _, part in ipairs(jet:GetDescendants()) do
+        if part:IsA("BasePart") then
+            return part
+        end
+    end
+    return nil
+end
+
+-- FunÃ§Ã£o para calcular distÃ¢ncia
+local function getDistance(pos1, pos2)
+    return (pos1 - pos2).Magnitude
+end
+
+-- FunÃ§Ã£o para esperar novo jato
+local function waitForNewJet(existingJets)
+    local maxAttempts = 10
+    local attempt = 0
+    while (running1 or running2) and attempt < maxAttempts do
+        for _, jet in ipairs(jetStorage:GetChildren()) do
+            if jet:IsA("Model") and not existingJets[jet] then
+                return jet
+            end
+        end
+        attempt = attempt + 1
+        RunService.Heartbeat:Wait()
+    end
+    return nil
+end
+
+-- FunÃ§Ã£o para teleportar o jato
+local function teleportAndStabilizeJet(jet, position)
+    local primaryPart = getFirstPart(jet)
+    if not primaryPart then
+        warn("[ERRO] Nenhuma parte fÃ­sica no jato:", jet.Name)
+        return false
+    end
+
+    local maxAttempts = 5
+    local attempt = 0
+    while attempt < maxAttempts do
+        pcall(function()
+            jet.PrimaryPart = primaryPart
+        end)
+        primaryPart.Anchored = false
+        task.wait(0.3)
+        pcall(function()
+            jet:SetPrimaryPartCFrame(CFrame.new(position) * CFrame.Angles(0, math.rad(90), 0))
+            task.wait(0.5)
+            primaryPart.Velocity = Vector3.new(0, 0, 0)
+            primaryPart.RotVelocity = Vector3.new(0, 0, 0)
+        end)
+        if (jet.PrimaryPart and (jet.PrimaryPart.Position - position).Magnitude < 5) then
+            return true
+        end
+        attempt = attempt + 1
+        task.wait(0.5)
+    end
+    warn("[ERRO] Falha ao teleportar jato:", jet.Name)
+    return false
+end
+
+-- FunÃ§Ã£o para mostrar notificaÃ§Ã£o com foto do player
+local function showNotification(playerName, playerImage)
+    local notification = Instance.new("ScreenGui")
+    notification.Parent = playerGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 200, 0, 100)
+    frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    frame.Parent = notification
+
+    local image = Instance.new("ImageLabel")
+    image.Size = UDim2.new(0, 50, 0, 50)
+    image.Position = UDim2.new(0, 10, 0, 25)
+    image.BackgroundTransparency = 1
+    image.Image = playerImage or "rbxasset://textures/ui/GuiImagePlaceholder.png"
+    image.Parent = frame
+
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(0, 130, 0, 50)
+    text.Position = UDim2.new(0, 70, 0, 25)
+    text.BackgroundTransparency = 1
+    text.TextColor3 = Color3.new(1, 1, 1)
+    text.Text = "Jogador: " .. (playerName or "Nenhum")
+    text.Font = Enum.Font.SourceSansBold
+    text.TextSize = 16
+    text.Parent = frame
+
+    task.delay(3, function()
+        notification:Destroy()
+    end)
+end
+
+-- Loop modo 1: Spam Local
+local function startLoop1()
+    if running1 then return end
+    running1 = true
+
+    for _, jet in ipairs(jetStorage:GetChildren()) do
+        if jet:IsA("Model") then
+            local primaryPart = getFirstPart(jet)
+            if primaryPart and getDistance(primaryPart.Position, buttonPosition) < 50 then
+                teleportAndStabilizeJet(jet, voidPosition)
+                task.wait(0.5)
+            end
+        end
+    end
+
+    loopConnection1 = RunService.Heartbeat:Connect(function()
+        if not running1 then return end
+
+        local existingJets = {}
+        for _, jet in ipairs(jetStorage:GetChildren()) do
+            existingJets[jet] = true
+        end
+
+        fireclickdetector(clickDetector)
+        player.Character:SetPrimaryPartCFrame(CFrame.new(buttonPosition))
+        task.wait(0.5)
+
+        local newJet = waitForNewJet(existingJets)
+        if newJet then
+            while not teleportAndStabilizeJet(newJet, targetPosition) do
+                task.wait(0.5)
+            end
+            task.wait(0.5)
+        else
+            task.wait(0.5)
+        end
+    end)
+end
+
+local function stopLoop1()
+    running1 = false
+    if loopConnection1 then
+        loopConnection1:Disconnect()
+        loopConnection1 = nil
+    end
+    if originalPosition and player.Character then
+        player.Character:SetPrimaryPartCFrame(CFrame.new(originalPosition))
+    end
+end
+
+-- Loop modo 2: Spam em Jogador
+local function startLoop2()
+    if running2 or not selectedPlayer or not selectedPlayer.Character then return end
+    running2 = true
+
+    for _, jet in ipairs(jetStorage:GetChildren()) do
+        if jet:IsA("Model") then
+            local primaryPart = getFirstPart(jet)
+            if primaryPart and getDistance(primaryPart.Position, buttonPosition) < 50 then
+                teleportAndStabilizeJet(jet, voidPosition)
+                task.wait(0.5)
+            end
+        end
+    end
+
+    loopConnection2 = RunService.Heartbeat:Connect(function()
+        if not running2 then return end
+
+        local existingJets = {}
+        for _, jet in ipairs(jetStorage:GetChildren()) do
+            existingJets[jet] = true
+        end
+
+        fireclickdetector(clickDetector)
+        player.Character:SetPrimaryPartCFrame(CFrame.new(buttonPosition))
+        task.wait(0.5)
+
+        local newJet = waitForNewJet(existingJets)
+        if newJet and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            while not teleportAndStabilizeJet(newJet, selectedPlayer.Character.HumanoidRootPart.Position) do
+                task.wait(0.5)
+            end
+            task.wait(0.5)
+        else
+            task.wait(0.5)
+        end
+    end)
+end
+
+local function stopLoop2()
+    running2 = false
+    if loopConnection2 then
+        loopConnection2:Disconnect()
+        loopConnection2 = nil
+    end
+    if originalPosition and player.Character then
+        player.Character:SetPrimaryPartCFrame(CFrame.new(originalPosition))
+    end
+end
+
+
+--  - Tab10
+TrollTab:AddTextBox({
+    Name = "Nome do Jogador",
+    Description = "Digite o nome do jogador para spawnar o jato nele",
+    PlaceholderText = "Exemplo: wx = wx yan",
+    Callback = function(Value)
+        local input = Value:lower()
+        if input ~= "" then
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr.Name:lower():sub(1, #input) == input then
+                    selectedPlayer = plr
+                    showNotification(plr.Name, "rbxthumb://id=" .. plr.UserId .. "?width=50&height=50")
+                    break
+                end
+            end
+        else
+            selectedPlayer = nil
+            showNotification("Nenhum", nil)
+        end
+    end
+})
+
+TrollTab:AddParagraph({"Script original do Coquette"})
+
+TrollTab:AddButton({
+    Name = "Iniciar Spamming de Avião",
+    Callback = function()
+        startLoop1()
+    end
+})
+
+TrollTab:AddButton({
+    Name = "Parar Spamming de Avião",
+    Callback = function()
+        stopLoop1()
+    end
+})
+
+TrollTab:AddSection({"Jogador selecionado no textbox a cima, para ser jatado hehehe!"})
+
+TrollTab:AddButton({
+    Name = "Iniciar Spamming no Jogador BETA",
+    Callback = function()
+        startLoop2()
+    end
+})
+
+TrollTab:AddButton({
+    Name = "Parar Spamming no Jogador BETA",
+    Callback = function()
+        stopLoop2()
+    end
+})
+
+
+ 
+
+end -- Fim do bloco de scripts
+
 TrollTab:AddSection({ "Desastres naturais" })
 TrollTab:AddButton({
     Name = "[⚠️ MUITO OP] Tornado - Navio pirata GRANDE",
