@@ -2591,9 +2591,9 @@ TrollTab:AddButton({
 
 do -- comeÃ§o do bloco de scripts
 
-TrollTab:AddParagraph({"Script original de Lolyta666"})
+TrollTab:AddParagraph({"Script de Wx e Shelby})
     
-TrollTab:AddParagraph({"Spam de Jato - irreversível!"})
+TrollTab:AddParagraph({"Isso é irreversível, cancelar só volta a Skybox! "})
     
 TrollTab:AddSection({"Spamming de Avião - ✅🙏"})
 
@@ -4457,14 +4457,7 @@ local function houseBanKill()
             end
         end
     end
-end
-
-Troll:AddButton({
-        Name = "Arremessar Jogador com Truck",
-        Callback = function() 
-     TruckFling(selectedPlayerName)
-          end
-})
+een
 
 Troll:AddButton({
     Name = "House Ban Kill",
