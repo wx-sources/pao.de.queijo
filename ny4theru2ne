@@ -1637,6 +1637,161 @@ InfoTab:AddButton({
     end
 })
 
+local Tab1 = Window:MakeTab({"Spoofed Gamepass", "gamepad"})
+
+local Section = Tab1:AddSection({"Aviso: visual apenas pra vc!"})
+
+-- TextBox Premium funcional
+Tab1:AddTextBox({
+    Name = "Chat como premium",
+    Description = "Use o chat como se fosse premium",
+    PlaceholderText = "Oi eu sou premium!",
+    Callback = function(Value)
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local chatService = game:GetService("TextChatService")
+
+        if chatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local msg = ". \r[Premium] " .. LocalPlayer.Name .. ": " .. Value
+            chatService.TextChannels.RBXGeneral:SendAsync(msg)
+        end
+    end
+})
+
+-- Botão: Casa Premium 1 (classe alta)
+Tab1:AddButton({
+    Name = "[🌟] Casa Premium 1 (casa do classe alta)",
+    Callback = function()
+        -- Casa do classe alta
+        local targetPosition = Vector3.new(1011, 3, 824)
+        local assetId = 18679403848
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+
+        local function teleportPlayer(pos)
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = CFrame.new(pos)
+            end
+        end
+
+        local function loadHouseWithOffset(pos, verticalOffset)
+            local success, models = pcall(function()
+                return game:GetObjects("rbxassetid://" .. tostring(assetId))
+            end)
+
+            if not (success and models and #models > 0) then
+                warn("Falha ao carregar asset ID:", assetId)
+                return
+            end
+
+            local house = models[1]
+
+            if not house.PrimaryPart then
+                local primary = house:FindFirstChildWhichIsA("BasePart")
+                if primary then
+                    house.PrimaryPart = primary
+                else
+                    warn("Modelo sem BasePart para definir PrimaryPart.")
+                end
+            end
+
+            if house.PrimaryPart then
+                local originalCFrame = house.PrimaryPart.CFrame
+                local offsetCFrame = originalCFrame * CFrame.new(0, -verticalOffset, 0)
+                local delta = offsetCFrame.Position - originalCFrame.Position
+
+                for _, part in ipairs(house:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CFrame = part.CFrame + delta
+                    end
+                end
+            end
+
+            house.Parent = workspace
+            house:SetPrimaryPartCFrame(CFrame.new(pos))
+
+            print("Casa carregada com deslocamento vertical de " .. verticalOffset .. " studs.")
+        end
+
+        teleportPlayer(targetPosition)
+        loadHouseWithOffset(targetPosition, 42)
+    end
+})
+
+-- Botão: Casa Premium 2 (prédio do rico)
+Tab1:AddButton({
+    Name = "[🌟] Casa Premium 2 (prédio do rico)",
+    Callback = function()
+        -- prédio do Rico
+        local targetPosition = Vector3.new(1031, 3, 1028)
+        local assetId = 18679346450
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+
+        local function teleportPlayer(pos)
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = CFrame.new(pos)
+            end
+        end
+
+        local function loadHouseWithOffset(pos, verticalOffset)
+            local success, models = pcall(function()
+                return game:GetObjects("rbxassetid://" .. tostring(assetId))
+            end)
+
+            if not (success and models and #models > 0) then
+                warn("Falha ao carregar asset ID:", assetId)
+                return
+            end
+
+            local house = models[1]
+
+            if not house.PrimaryPart then
+                local primary = house:FindFirstChildWhichIsA("BasePart")
+                if primary then
+                    house.PrimaryPart = primary
+                else
+                    warn("Modelo sem BasePart para definir PrimaryPart.")
+                end
+            end
+
+            if house.PrimaryPart then
+                local originalCFrame = house.PrimaryPart.CFrame
+                local offsetCFrame = originalCFrame * CFrame.new(0, -verticalOffset, 0)
+                local delta = offsetCFrame.Position - originalCFrame.Position
+
+                for _, part in ipairs(house:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CFrame = part.CFrame + delta
+                    end
+                end
+            end
+
+            house.Parent = workspace
+            house:SetPrimaryPartCFrame(CFrame.new(pos))
+
+            print("Casa carregada com deslocamento vertical de " .. verticalOffset .. " studs.")
+        end
+
+        teleportPlayer(targetPosition)
+        loadHouseWithOffset(targetPosition, 42)
+    end
+})
+
+-- Botão: Spawn Carro Exclusivo
+Tab1:AddButton({
+    Name = "[🚗] Spawn Carro Exclusivo",
+    Callback = function()
+        -- Exploit Level 7 - Inserir Model RBXAssetId
+        local model = game:GetObjects("rbxassetid://8714153713")[1]
+        model.Parent = workspace
+        model:MoveTo(game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:GetPivot().Position + Vector3.new(0,5,0) or Vector3.zero)
+    end
+})
+
+
 local autoTab = Window:MakeTab({ Title = "Autofarm", Icon = "rbxassetid://10734983868" })
 
 
