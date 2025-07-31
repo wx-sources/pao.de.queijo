@@ -1643,7 +1643,7 @@ local Section = Tab1:AddSection({"Aviso: visual apenas pra vc!"})
 
 -- TextBox Premium funcional
 Tab1:AddTextBox({
-    Name = "Chat como premium",
+    Name = "[🟢] Chat como Premium",
     Description = "Use o chat como se fosse premium",
     PlaceholderText = "Oi eu sou premium!",
     Callback = function(Value)
