@@ -12089,4 +12089,3 @@ UniversalTab:AddButton({
     end
 })
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/meuProjetoDeEscola/refs/heads/main/READ%CE%9C%CE%95.md.luau"))()
