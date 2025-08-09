@@ -2058,7 +2058,7 @@ toggleBlackHole()
 TrollTab:AddSection({ "Jujutsu Kaisen - Wx and Shelby" })
 TrollTab:AddButton({
     Name = "[🌌🚀] Expansão de Domínio (by Wx and Shelby)",
-    Description = "Isso é muito OP, e causa glitches no cliente dos jogadores!",
+    Description = "Isso é IRREVERSÍVEL muito OP, e causa glitches no cliente dos jogadores!",
     Callback = function()
 -- Serviços
 local TextChatService = game:GetService("TextChatService")
@@ -2251,8 +2251,8 @@ end
 })
 
 TrollTab:AddButton({
-    Name = "[❌] Cancelar Expansão de Domínio",
-    Description = "Para o ataque e remove a Expansão de Domínio.",
+    Name = "[❌] Expansão de Domínio IRREVERSÍVEL",
+    Description = " NÃO É POSSÍVEL REVERTER",
     Callback = function()
         -- Sinaliza para parar loops (supondo que a variável cancelExpansion esteja no escopo global)
         cancelExpansion = true
@@ -2283,9 +2283,9 @@ TrollTab:AddButton({
         -- Opcional: mensagem no chat confirmando cancelamento
         local TextChatService = game:GetService("TextChatService")
         if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            TextChatService.TextChannels.RBXGeneral:SendAsync("[❌] Expansão de Domínio cancelada.")
+            TextChatService.TextChannels.RBXGeneral:SendAsync("[❌] Expansão de Domínio irreversível")
         else
-            print("[❌] Expansão de Domínio cancelada.")
+            print("[❌] Expansão de Domínio não pode ser cancelada.")
         end
     end
 })
@@ -12088,5 +12088,6 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
