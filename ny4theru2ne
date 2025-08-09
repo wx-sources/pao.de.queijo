@@ -1330,13 +1330,13 @@ InfoTab:AddDiscordInvite({
     Name = "Nytherune Developers",
     Description = "Join server",
     Logo = "rbxassetid://18751483361",
-    Invite = "https://discord.gg/ruEdVGsthy",
+    Invite = "https://discord.gg/QQjR8XVy7g",
 })
 InfoTab:AddSection({ "Informações do Script" })
 InfoTab:AddParagraph({ "Wx (Discord: @sou.wx, Roblox WxDeveloper e SouWX_tkk)" })
 InfoTab:AddParagraph({ "Colaborações:", "Lolyta, Dragon, Why, Galaxy, 7, Venom, Luscaa, Icy, Shelby" })
 InfoTab:AddParagraph({ "Você está usando:", "Nytherune Hub" })
-InfoTab:AddParagraph({"O script é open source olhe nosso github!"})
+InfoTab:AddParagraph({"Novo server do Discord! entre Agr!"})
 InfoTab:AddParagraph({"Novidades:", "Novo shutdown em jogadores! Agora eles vão ter glitches enquanto jogam."})
 InfoTab:AddButton({"Versão Experimental", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/spacecomm/refs/heads/main/experimental"))()
@@ -12088,4 +12088,5 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
