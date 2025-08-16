@@ -4334,6 +4334,133 @@ end
     end
 end
 
+function Stephannythrow()
+    -- Funções internas
+    local function clearTools()
+        if ClearEvent then
+            ClearEvent:FireServer("ClearAllTools")
+        end
+    end
+
+    local function requestAssault()
+        if ToolEvent then
+            ToolEvent:InvokeServer("PickingTools", "Assault")
+        end
+    end
+
+    local function hasWeapon()
+        return LocalPlayer.Backpack:FindFirstChild("Assault") or LocalPlayer.Character:FindFirstChild("Assault")
+    end
+
+    local function equipWeapon()
+        local weapon = LocalPlayer.Backpack:FindFirstChild("Assault")
+        if weapon and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid:EquipTool(weapon)
+            return true
+        end
+        return false
+    end
+
+    local function getGunScript()
+        local weapon = LocalPlayer.Character:FindFirstChild("Assault") or LocalPlayer.Backpack:FindFirstChild("Assault")
+        return weapon and weapon:FindFirstChild("GunScript_Local")
+    end
+
+    local function executeShot(target)
+        local gunScript = getGunScript()
+        if not gunScript or not target then return end
+
+        local args = {
+            target,
+            target,
+            Vector3.new(FlingSystem.power, FlingSystem.power, FlingSystem.power),
+            target.Position,
+            gunScript:FindFirstChild("MuzzleEffect"),
+            gunScript:FindFirstChild("HitEffect"),
+            0,
+            0,
+            { false },
+            {
+                FlingSystem.damage,
+                Vector3.new(1000, 1000, 1000),
+                BrickColor.new(29),
+                0.25,
+                Enum.Material.SmoothPlastic,
+                0.25
+            },
+            true,
+            false
+        }
+        FireEvent:FireServer(unpack(args))
+    end
+
+    local function getSelectedTarget()
+        if not selectedPlayerName then return nil end
+        local player = Players:FindFirstChild(selectedPlayerName)
+        if player and player.Character then
+            local humanoid = player.Character:FindFirstChild("Humanoid")
+            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+            if humanoid and rootPart and humanoid.Health > 0 then
+                return { player = player, part = rootPart }
+            end
+        end
+        return nil
+    end
+
+    local function flingTarget()
+        local target = getSelectedTarget()
+        if target then
+            executeShot(target.part)
+            local head = target.player.Character:FindFirstChild("Head")
+            if head then executeShot(head) end
+
+            local torso = target.player.Character:FindFirstChild("Torso") or target.player.Character:FindFirstChild("UpperTorso")
+            if torso then executeShot(torso) end
+        end
+    end
+
+    local function maintainWeapon()
+        if not hasWeapon() then
+            clearTools()
+            task.wait(0.1)
+            requestAssault()
+            task.wait(0.2)
+
+            local attempts = 0
+            while not hasWeapon() and attempts < 20 do
+                task.wait(0.1)
+                attempts = attempts + 1
+            end
+
+            if FlingSystem.autoEquip and hasWeapon() then
+                equipWeapon()
+            end
+        end
+    end
+
+    local function mainLoop()
+        while true do
+            maintainWeapon()
+            if hasWeapon() and getGunScript() then
+                flingTarget()
+            end
+            task.wait(FlingSystem.interval)
+        end
+    end
+
+    maintainWeapon()
+    task.spawn(mainLoop)
+end
+
+Troll:AddButton({
+  Name = "[🔥] Stephanny throw v1 / annoy",
+Description = "Arremessa o jogador alvo depois de um tempo. Made by Self",
+  Callback = function()
+            Stephannythrow()
+end
+})
+
+
 Troll:AddButton({
     Name = "Fling Ball",
     Callback = function()
@@ -4707,8 +4834,53 @@ Troll:AddButton({
     end
 })
 
-local kill = Troll:AddSection({Name = "Click Kill Methods"})
+local kill = Troll:AddSection({Name = "Click and Auto Kill Methods"})
 
+
+local function AutoKartFling()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player:WaitForChild("Backpack")
+    local root = character:WaitForChild("HumanoidRootPart")
+
+    -- === Spin a 500 ===
+    local bav = Instance.new("BodyAngularVelocity")
+    bav.AngularVelocity = Vector3.new(0, 500, 0)
+    bav.MaxTorque = Vector3.new(0, math.huge, 0)
+    bav.P = 1000
+    bav.Parent = root
+
+    -- === Complemento PickingTools e ShoppingCart ===
+    local args = {"PickingTools", "ShoppingCart"}
+    game:GetService("ReplicatedStorage"):WaitForChild("RE"):WaitForChild("1Too1l"):InvokeServer(unpack(args))
+
+    -- === Função para equipar ferramentas com 'cart' no nome ===
+    local function equipCartTools()
+        for _, tool in pairs(backpack:GetChildren()) do
+            if tool:IsA("Tool") and string.find(string.lower(tool.Name), "cart") then
+                player.Character.Humanoid:EquipTool(tool)
+            end
+        end
+    end
+
+    -- Equipar inicialmente
+    equipCartTools()
+
+    -- Monitorar o backpack para novas ferramentas
+    backpack.ChildAdded:Connect(function(child)
+        if child:IsA("Tool") and string.find(string.lower(child.Name), "cart") then
+            player.Character.Humanoid:EquipTool(child)
+        end
+    end)
+end
+
+Troll:AddButton({
+  Name = "[🛒🔥] Auto Kart Fling",
+Description = "Se vc bugar no chão resete seu personagem;",
+  Callback = function()
+          AutoKartFling()
+end
+})
 Troll:AddButton({
   Name = "Click Fling Portas [Beta]",
 Description = "Para Usar, Recomendo chegar perto de outras portas, apos ela ir até você, clique no jogador que deseja flingar",
@@ -12088,6 +12260,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
