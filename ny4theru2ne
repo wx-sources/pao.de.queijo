@@ -1309,8 +1309,10 @@ end
 
 StartLoadingSequence() 
 
-local Libary = loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/Library-ui/refs/heads/main/Redzhubui"))()
+local Libary = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/V5/Source.lua"))()
 workspace.FallenPartsDestroyHeight = -math.huge
+
+Libary:SetTheme("Purple")
 
 local Window = Libary:MakeWindow({
     Title = "🌌 Nytherune Hub + 🌌 - Nytherune Developers Brookhaven",
@@ -12260,6 +12262,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
