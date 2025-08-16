@@ -4336,8 +4336,19 @@ end
     end
 end
 
-function Stephannythrow()
-    -- Funções internas
+local function Stephannythrow()
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local LocalPlayer = Players.LocalPlayer
+
+    local RE = ReplicatedStorage:WaitForChild("RE")
+    local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+    local ToolEvent = RE:FindFirstChild("1Too1l")
+    local FireEvent = RE:FindFirstChild("1Gu1n")
+
+    local FlingSystem = { power = 1e14, damage = 999999, interval = 0.02 }
+
+    -- Funções de ferramentas
     local function clearTools()
         if ClearEvent then
             ClearEvent:FireServer("ClearAllTools")
@@ -4433,9 +4444,13 @@ function Stephannythrow()
                 task.wait(0.1)
                 attempts = attempts + 1
             end
+        end
 
-            if FlingSystem.autoEquip and hasWeapon() then
-                equipWeapon()
+        -- Equipar arma manualmente, se disponível
+        if hasWeapon() and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            local weapon = LocalPlayer.Backpack:FindFirstChild("Assault")
+            if weapon then
+                LocalPlayer.Character.Humanoid:EquipTool(weapon)
             end
         end
     end
@@ -12262,6 +12277,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
