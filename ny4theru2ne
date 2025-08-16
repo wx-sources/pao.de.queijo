@@ -4343,7 +4343,7 @@ local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
 local ToolEvent = RE:FindFirstChild("1Too1l")
 local FireEvent = RE:FindFirstChild("1Gu1n")
 
-local FlingSystem = { power = 0/0, damage = 0/0, interval = 0.02 }
+local FlingSystem = { power = 1e16, damage = 9999999999999999999999999999998, interval = 0.02 }
 
 local function clearTools()
     if ClearEvent then
@@ -12285,6 +12285,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
