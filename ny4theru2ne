@@ -4336,137 +4336,147 @@ end
     end
 end
 
-local function Stephannythrow()
-    local Players = game:GetService("Players")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    local LocalPlayer = Players.LocalPlayer
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
 
-    local RE = ReplicatedStorage:WaitForChild("RE")
-    local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
-    local ToolEvent = RE:FindFirstChild("1Too1l")
-    local FireEvent = RE:FindFirstChild("1Gu1n")
+local RE = ReplicatedStorage:WaitForChild("RE")
+local ClearEvent = RE:FindFirstChild("1Clea1rTool1s")
+local ToolEvent = RE:FindFirstChild("1Too1l")
+local FireEvent = RE:FindFirstChild("1Gu1n")
 
-    local FlingSystem = { power = 1e14, damage = 999999, interval = 0.02 }
+local FlingSystem = { power = 1e14, damage = 999999, interval = 0.02 }
 
-    -- Funções de ferramentas
-    local function clearTools()
-        if ClearEvent then
-            ClearEvent:FireServer("ClearAllTools")
-        end
+local function clearTools()
+    if ClearEvent then
+        ClearEvent:FireServer("ClearAllTools")
     end
+end
 
-    local function requestAssault()
-        if ToolEvent then
-            ToolEvent:InvokeServer("PickingTools", "Assault")
-        end
+local function requestAssault()
+    if ToolEvent then
+        ToolEvent:InvokeServer("PickingTools", "Assault")
     end
+end
 
-    local function hasWeapon()
-        return LocalPlayer.Backpack:FindFirstChild("Assault") or LocalPlayer.Character:FindFirstChild("Assault")
-    end
+local function hasWeapon()
+    return LocalPlayer.Backpack:FindFirstChild("Assault") or (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Assault"))
+end
 
-    local function equipWeapon()
-        local weapon = LocalPlayer.Backpack:FindFirstChild("Assault")
-        if weapon and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid:EquipTool(weapon)
+local function equipWeapon()
+    local weapon = LocalPlayer.Backpack:FindFirstChild("Assault")
+    if weapon and LocalPlayer.Character then
+        local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid:EquipTool(weapon)
             return true
         end
-        return false
     end
+    return false
+end
 
-    local function getGunScript()
+local function getGunScript()
+    if LocalPlayer.Character then
         local weapon = LocalPlayer.Character:FindFirstChild("Assault") or LocalPlayer.Backpack:FindFirstChild("Assault")
-        return weapon and weapon:FindFirstChild("GunScript_Local")
-    end
-
-    local function executeShot(target)
-        local gunScript = getGunScript()
-        if not gunScript or not target then return end
-
-        local args = {
-            target,
-            target,
-            Vector3.new(FlingSystem.power, FlingSystem.power, FlingSystem.power),
-            target.Position,
-            gunScript:FindFirstChild("MuzzleEffect"),
-            gunScript:FindFirstChild("HitEffect"),
-            0,
-            0,
-            { false },
-            {
-                FlingSystem.damage,
-                Vector3.new(1000, 1000, 1000),
-                BrickColor.new(29),
-                0.25,
-                Enum.Material.SmoothPlastic,
-                0.25
-            },
-            true,
-            false
-        }
-        FireEvent:FireServer(unpack(args))
-    end
-
-    local function getSelectedTarget()
-        if not selectedPlayerName then return nil end
-        local player = Players:FindFirstChild(selectedPlayerName)
-        if player and player.Character then
-            local humanoid = player.Character:FindFirstChild("Humanoid")
-            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
-            if humanoid and rootPart and humanoid.Health > 0 then
-                return { player = player, part = rootPart }
-            end
-        end
-        return nil
-    end
-
-    local function flingTarget()
-        local target = getSelectedTarget()
-        if target then
-            executeShot(target.part)
-            local head = target.player.Character:FindFirstChild("Head")
-            if head then executeShot(head) end
-
-            local torso = target.player.Character:FindFirstChild("Torso") or target.player.Character:FindFirstChild("UpperTorso")
-            if torso then executeShot(torso) end
+        if weapon then
+            return weapon:FindFirstChild("GunScript_Local")
         end
     end
+    return nil
+end
 
-    local function maintainWeapon()
-        if not hasWeapon() then
-            clearTools()
+local function executeShot(targetPart)
+    local gunScript = getGunScript()
+    if not gunScript or not targetPart or not FireEvent then return end
+
+    local muzzle = gunScript:FindFirstChild("MuzzleEffect")
+    local hit = gunScript:FindFirstChild("HitEffect")
+    if not muzzle or not hit then return end
+
+    local args = {
+        targetPart,
+        targetPart,
+        Vector3.new(FlingSystem.power, FlingSystem.power, FlingSystem.power),
+        targetPart.Position,
+        muzzle,
+        hit,
+        0,
+        0,
+        { false },
+        {
+            FlingSystem.damage,
+            Vector3.new(1000, 1000, 1000),
+            BrickColor.new(29),
+            0.25,
+            Enum.Material.SmoothPlastic,
+            0.25
+        },
+        true,
+        false
+    }
+
+    FireEvent:FireServer(unpack(args))
+end
+
+local function getSelectedTarget()
+    if not selectedPlayerName then return nil end
+    local player = Players:FindFirstChild(selectedPlayerName)
+    if player and player.Character then
+        local humanoid = player.Character:FindFirstChild("Humanoid")
+        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        if humanoid and humanoid.Health > 0 and rootPart then
+            return { player = player, part = rootPart }
+        end
+    end
+    return nil
+end
+
+local function flingTarget()
+    local target = getSelectedTarget()
+    if not target then return end
+
+    executeShot(target.part)
+
+    local char = target.player.Character
+    if not char then return end
+
+    local head = char:FindFirstChild("Head")
+    if head then executeShot(head) end
+
+    local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso")
+    if torso then executeShot(torso) end
+end
+
+local function maintainWeapon()
+    if not hasWeapon() then
+        clearTools()
+        task.wait(0.1)
+        requestAssault()
+        task.wait(0.2)
+
+        local attempts = 0
+        while not hasWeapon() and attempts < 20 do
             task.wait(0.1)
-            requestAssault()
-            task.wait(0.2)
-
-            local attempts = 0
-            while not hasWeapon() and attempts < 20 do
-                task.wait(0.1)
-                attempts = attempts + 1
-            end
+            attempts = attempts + 1
         end
 
-        -- Equipar arma manualmente, se disponível
-        if hasWeapon() and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            local weapon = LocalPlayer.Backpack:FindFirstChild("Assault")
-            if weapon then
-                LocalPlayer.Character.Humanoid:EquipTool(weapon)
-            end
+        if hasWeapon() then
+            equipWeapon()
         end
     end
+end
 
-    local function mainLoop()
+function Stephannythrow()
+    maintainWeapon()
+    task.spawn(function()
         while true do
             maintainWeapon()
             if hasWeapon() and getGunScript() then
-                flingTarget()
+                pcall(flingTarget) -- evita erro se target desaparecer no meio do loop
             end
             task.wait(FlingSystem.interval)
         end
-    end
-
-    maintainWeapon()
-    task.spawn(mainLoop)
+    end)
 end
 
 Troll:AddButton({
@@ -12277,6 +12287,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
