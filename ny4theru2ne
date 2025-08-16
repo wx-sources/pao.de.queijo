@@ -4403,7 +4403,7 @@ local function executeShot(targetPart)
         { false },
         {
             FlingSystem.damage,
-            Vector3.new(100, 100, 100),
+            Vector3.new(5000, 5000, 5000),
             BrickColor.new(29),
             0.25,
             Enum.Material.SmoothPlastic,
@@ -12285,6 +12285,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
