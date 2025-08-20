@@ -326,7 +326,7 @@ local ai = Window:MakeTab({ Title = "Inteligência Artificial", Icon = "bus"})
 
 ai:AddButton({
 Name = "[🌌] Inteligência Artificial",
-Description = "Inspiração na Stelarium, powered by Kimi"
+Description = "Inspiração na Stelarium, powered by Kimi",
 Callback = function()
   loadAi()
 end
@@ -11160,3 +11160,4 @@ UniversalTab:AddButton({
 
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/3ad3m3n/refs/heads/main/nyt"))()
+
