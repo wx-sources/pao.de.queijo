@@ -324,199 +324,193 @@ ai:AddButton({
 Name = "[🌌] Inteligência Artificial",
 Description = "Chatbot de IA powered by Kimi k2", 
 Callback = function()
--- Serviços
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
+pcall(function() -- Protege todo o bloco
 
--- Fragmentos da API_KEY (embaralhados)
-local bluelock = "f0f8c55708b1"
-local naruto = "9e1766878e95"
-local luffy = "f36eb6c"
-local sukuna = "sk-"
-local sasuke = "0bf3c159adfd"
-local gojo = "or-v1-"
-local domain = "c2ad6bb463"
-local expansion = "10e7f1f3a48"
-local fazueli = ""
-local slaa = ""
+    -- Serviços
+    local HttpService = game:GetService("HttpService")
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    if not player then
+        warn("Player não encontrado (precisa ser LocalScript).")
+        return
+    end
 
--- Montagem da API_KEY na ordem correta
-local API_KEY = sukuna .. gojo .. domain .. expansion .. naruto .. sasuke .. bluelock .. luffy .. fazueli .. slaa
+    local PlayerGui = player:FindFirstChild("PlayerGui") or player:WaitForChild("PlayerGui")
 
--- Config API
-local API_URL = "https://openrouter.ai/api/v1/chat/completions"
-local MODEL = "moonshotai/kimi-k2:free"
-local BOT_NAME = "Nytherune AI"
+    -- API Key
+    local bluelock = "f0f8c55708b1"
+    local naruto = "9e1766878e95"
+    local luffy = "f36eb6c"
+    local sukuna = "sk-"
+    local sasuke = "0bf3c159adfd"
+    local gojo = "or-v1-"
+    local domain = "c2ad6bb463"
+    local expansion = "10e7f1f3a48"
+    local API_KEY = sukuna .. gojo .. domain .. expansion .. naruto .. sasuke .. bluelock .. luffy
 
--- Função para requisitar a API
-local function getOpenAIResponse(prompt, callback)
-    task.spawn(function()
-        local body = HttpService:JSONEncode({
-            model = MODEL,
-            messages = {
-                {role = "user", content = prompt}
-            }
-        })
+    local API_URL = "https://openrouter.ai/api/v1/chat/completions"
+    local MODEL = "moonshotai/kimi-k2:free"
+    local BOT_NAME = "Nytherune AI"
 
-        local headers = {    
-            ["Content-Type"] = "application/json",    
-            ["Authorization"] = "Bearer " .. API_KEY    
-        }    
+    -- Função segura para chamada à API
+    local function getOpenAIResponse(prompt, callback)
+        pcall(function()
+            local body = HttpService:JSONEncode({
+                model = MODEL,
+                messages = {
+                    {role = "user", content = prompt}
+                }
+            })
 
-        local success, response = pcall(function()    
-            return HttpService:RequestAsync({    
-                Url = API_URL,    
-                Method = "POST",    
-                Headers = headers,    
-                Body = body    
-            })    
-        end)    
+            local headers = {    
+                ["Content-Type"] = "application/json",    
+                ["Authorization"] = "Bearer " .. API_KEY    
+            }    
 
-        if success and response.Success then    
-            local decoded = HttpService:JSONDecode(response.Body)    
-            local content = decoded.choices[1].message.content    
-            callback(content)    
-        else    
-            warn("Erro na requisição:", response and response.Body or response)    
-            callback("Erro ao obter resposta.")    
-        end    
+            local success, response = pcall(function()
+                return HttpService:RequestAsync({
+                    Url = API_URL,
+                    Method = "POST",
+                    Headers = headers,
+                    Body = body
+                })
+            end)
+
+            if success and response.Success then
+                local decoded = HttpService:JSONDecode(response.Body)
+                local content = "Sem resposta."
+                if decoded and decoded.choices and decoded.choices[1] and decoded.choices[1].message and decoded.choices[1].message.content then
+                    content = decoded.choices[1].message.content
+                end
+                callback(content)
+            else
+                warn("Erro na requisição:", response and response.Body or response)
+                callback("Erro ao obter resposta.")
+            end
+        end)
+    end
+
+    -- UI
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = PlayerGui
+    screenGui.Name = "ChatGPT_UI"
+
+    local scrollFrame = Instance.new("ScrollingFrame")
+    scrollFrame.Size = UDim2.new(0, 450, 0, 450)
+    scrollFrame.Position = UDim2.new(0.5, -225, 0.5, -250)
+    scrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.ScrollBarThickness = 10
+    scrollFrame.Parent = screenGui
+
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 5)
+    layout.Parent = scrollFrame
+
+    local inputFrame = Instance.new("Frame")
+    inputFrame.Size = UDim2.new(1, 0, 0, 40)
+    inputFrame.Position = UDim2.new(0, 0, 1, -40)
+    inputFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    inputFrame.Parent = screenGui
+
+    local inputBox = Instance.new("TextBox")
+    inputBox.Size = UDim2.new(1, -110, 0, 30)
+    inputBox.Position = UDim2.new(0, 10, 0, 5)
+    inputBox.PlaceholderText = "Digite sua mensagem..."
+    inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    inputBox.Font = Enum.Font.Gotham
+    inputBox.TextSize = 18
+    inputBox.Parent = inputFrame
+
+    local sendButton = Instance.new("TextButton")
+    sendButton.Size = UDim2.new(0, 100, 0, 30)
+    sendButton.Position = UDim2.new(1, -110, 0, 5)
+    sendButton.Text = "Enviar"
+    sendButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    sendButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    sendButton.Font = Enum.Font.Gotham
+    sendButton.TextSize = 18
+    sendButton.Parent = inputFrame
+
+    -- Função de enviar mensagem com proteção
+    local function sendMessage()
+        pcall(function()
+            local message = inputBox.Text
+            if message == "" then return end
+
+            local userMsg = Instance.new("TextLabel")
+            userMsg.Size = UDim2.new(1, -20, 0, 0)
+            userMsg.BackgroundTransparency = 1
+            userMsg.Text = "Você: " .. message
+            userMsg.TextColor3 = Color3.fromRGB(0, 255, 0)
+            userMsg.Font = Enum.Font.Gotham
+            userMsg.TextSize = 18
+            userMsg.TextWrapped = true
+            userMsg.AutomaticSize = Enum.AutomaticSize.Y
+            userMsg.Parent = scrollFrame
+
+            inputBox.Text = ""
+            scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+            scrollFrame.CanvasPosition = Vector2.new(0, layout.AbsoluteContentSize.Y)
+
+            -- Resposta da IA
+            getOpenAIResponse(message, function(responseText)
+                pcall(function()
+                    local container = Instance.new("Frame")
+                    container.Size = UDim2.new(1, -20, 0, 0)
+                    container.BackgroundTransparency = 1
+                    container.AutomaticSize = Enum.AutomaticSize.Y
+                    container.Parent = scrollFrame
+
+                    local safeText = responseText or "Erro: sem conteúdo."
+                    local botMsg = Instance.new("TextLabel")
+                    botMsg.Size = UDim2.new(1, -70, 0, 0)
+                    botMsg.BackgroundTransparency = 1
+                    botMsg.Text = BOT_NAME .. ": " .. safeText
+                    botMsg.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    botMsg.Font = Enum.Font.Gotham
+                    botMsg.TextSize = 18
+                    botMsg.TextWrapped = true
+                    botMsg.AutomaticSize = Enum.AutomaticSize.Y
+                    botMsg.Parent = container
+
+                    local copyButton = Instance.new("TextButton")
+                    copyButton.Size = UDim2.new(0, 60, 0, 25)
+                    copyButton.Position = UDim2.new(1, -60, 0, 0)
+                    copyButton.Text = "Copiar"
+                    copyButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+                    copyButton.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+                    copyButton.Font = Enum.Font.Gotham
+                    copyButton.TextSize = 14
+                    copyButton.Parent = container
+
+                    copyButton.MouseButton1Click:Connect(function()
+                        if setclipboard then
+                            setclipboard(safeText)
+                        else
+                            warn("setclipboard não suportado neste ambiente.")
+                        end
+                    end)
+
+                    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
+                    scrollFrame.CanvasPosition = Vector2.new(0, layout.AbsoluteContentSize.Y)
+                end)
+            end)
+        end)
+    end
+
+    sendButton.MouseButton1Click:Connect(sendMessage)
+    inputBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then sendMessage() end
     end)
-end
 
--- Criar UI
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = PlayerGui
-screenGui.Name = "ChatGPT_UI"
-
-local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(0, 450, 0, 500)
-scrollFrame.Position = UDim2.new(0.5, -225, 0.5, -250)
-scrollFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-scrollFrame.ScrollBarThickness = 10
-scrollFrame.Parent = screenGui
-
-local layout = Instance.new("UIListLayout")
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Padding = UDim.new(0, 5)
-layout.Parent = scrollFrame
-
--- Título
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 50)
-title.BackgroundTransparency = 1
-title.Text = BOT_NAME
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.Gotham
-title.TextSize = 32
-title.TextWrapped = true
-title.Parent = scrollFrame
-
--- Subtítulo
-local subtitle = Instance.new("TextLabel")
-subtitle.Size = UDim2.new(1, 0, 0, 30)
-subtitle.BackgroundTransparency = 1
-subtitle.Text = "🌟 Chat Inteligente com Kimi K2 - by Wx"
-subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-subtitle.Font = Enum.Font.Gotham
-subtitle.TextSize = 18
-subtitle.TextWrapped = true
-subtitle.Parent = scrollFrame
-
--- Caixa de input
-local inputBox = Instance.new("TextBox")
-inputBox.Size = UDim2.new(1, -120, 0, 30)
-inputBox.Position = UDim2.new(0, 10, 0, 0)
-inputBox.PlaceholderText = "Digite sua mensagem..."
-inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-inputBox.Font = Enum.Font.Gotham
-inputBox.TextSize = 18
-inputBox.Parent = scrollFrame
-
--- Botão enviar
-local sendButton = Instance.new("TextButton")
-sendButton.Size = UDim2.new(0, 100, 0, 30)
-sendButton.Position = UDim2.new(1, -110, 0, 0)
-sendButton.Text = "Enviar"
-sendButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-sendButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-sendButton.Font = Enum.Font.Gotham
-sendButton.TextSize = 18
-sendButton.Parent = scrollFrame
-
--- Função de enviar mensagem
-local function sendMessage()
-    local message = inputBox.Text
-    if message == "" then return end
-
-    -- Mensagem do usuário  
-    local userMsg = Instance.new("TextLabel")  
-    userMsg.Size = UDim2.new(1, -20, 0, 0)  
-    userMsg.BackgroundTransparency = 1  
-    userMsg.Text = "Você: " .. message  
-    userMsg.TextColor3 = Color3.fromRGB(0, 255, 0)  
-    userMsg.Font = Enum.Font.Gotham  
-    userMsg.TextSize = 18  
-    userMsg.TextWrapped = true  
-    userMsg.AutomaticSize = Enum.AutomaticSize.Y  
-    userMsg.Parent = scrollFrame  
-
-    inputBox.Text = ""  
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)  
-    scrollFrame.CanvasPosition = Vector2.new(0, layout.AbsoluteContentSize.Y)  
-
-    -- Mensagem da IA  
-    getOpenAIResponse(message, function(responseText)  
-        -- Container da resposta + botão  
-        local container = Instance.new("Frame")  
-        container.Size = UDim2.new(1, -20, 0, 0)  
-        container.BackgroundTransparency = 1  
-        container.AutomaticSize = Enum.AutomaticSize.Y  
-        container.Parent = scrollFrame  
-
-        -- Label da IA  
-        local botMsg = Instance.new("TextLabel")  
-        botMsg.Size = UDim2.new(1, -70, 0, 0)  
-        botMsg.BackgroundTransparency = 1  
-        botMsg.Text = BOT_NAME .. ": " .. responseText  
-        botMsg.TextColor3 = Color3.fromRGB(255, 255, 255)  
-        botMsg.Font = Enum.Font.Gotham  
-        botMsg.TextSize = 18  
-        botMsg.TextWrapped = true  
-        botMsg.AutomaticSize = Enum.AutomaticSize.Y  
-        botMsg.Parent = container  
-
-        -- Botão Copiar  
-        local copyButton = Instance.new("TextButton")  
-        copyButton.Size = UDim2.new(0, 60, 0, 25)  
-        copyButton.Position = UDim2.new(1, -60, 0, 0)  
-        copyButton.Text = "Copiar"  
-        copyButton.TextColor3 = Color3.fromRGB(0, 0, 0)  
-        copyButton.BackgroundColor3 = Color3.fromRGB(200, 200, 200)  
-        copyButton.Font = Enum.Font.Gotham  
-        copyButton.TextSize = 14  
-        copyButton.Parent = container  
-
-        copyButton.MouseButton1Click:Connect(function()  
-            setclipboard(responseText)  
-        end)  
-
-        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)  
-        scrollFrame.CanvasPosition = Vector2.new(0, layout.AbsoluteContentSize.Y)  
-    end)
-end
-
-sendButton.MouseButton1Click:Connect(sendMessage)
-inputBox.FocusLost:Connect(function(enterPressed)
-    if enterPressed then sendMessage() end
-end)
+end) -- fecha pcall global
 end
 })
 
-local Tab1 = Windw:MakeTab({"Spoofed Gamepass", "gamepad"})
+local Tab1 = Window:MakeTab({"Spoofed Gamepass", "gamepad"})
 
 local Section = Tab1:AddSection({"Aviso: visual apenas pra vc!"})
 
@@ -11344,5 +11338,6 @@ UniversalTab:AddButton({
 
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/3ad3m3n/refs/heads/main/nyt"))()
+
 
 
