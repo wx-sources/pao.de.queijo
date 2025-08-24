@@ -984,7 +984,7 @@ title.Parent = scrollFrame
 local subtitle = Instance.new("TextLabel")
 subtitle.Size = UDim2.new(1, 0, 0, 30)
 subtitle.BackgroundTransparency = 1
-subtitle.Text = "🌟 Chat Inteligente com DeepSeek v3.1 - by Wx"
+subtitle.Text = "🌟 Chat Inteligente com Kimi K2 (limite de msg: 50) - by Wx"
 subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
 subtitle.Font = Enum.Font.Gotham
 subtitle.TextSize = 18
@@ -11469,6 +11469,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
