@@ -430,28 +430,23 @@ end
 
 -- Destruir tudo ao final
 screenGui:Destroy()
-local Libary = loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/Redzmagnusv5/refs/heads/main/RedzV5.Lua.txt"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/Redzmagnusv5/refs/heads/main/RedzV5.Lua.txt"))()
 workspace.FallenPartsDestroyHeight = -math.huge
 
-local Window = Libary:MakeWindow({
+local Window = Library:MakeWindow({
     Title = "🌌 Nytherune Hub + 🌌 - Nytherune Developers Brookhaven",
     SubTitle = "by: Nytherune Developers",
     LoadText = "Nytherune Developers",
     Flags = "nythrnHub_Broookhaven"
 })
+
 Window:AddMinimizeButton({
     Button = { Image = "rbxassetid://1120738435", BackgroundTransparency = 0 },
     Corner = { CornerRadius = UDim.new(35, 1) },
 })
 
 local InfoTab = Window:MakeTab({ Title = "Info", Icon = "rbxassetid://10723415903" })
-
 InfoTab:AddSection({ "Informações do Jogador" })
-
---[[
- Script: Informações do Cliente + Executor em parágrafos (infoTab:AddParagraph)
- Mostra todas as informações disponíveis via APIs oficiais
-]]
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -462,11 +457,13 @@ local player = Players.LocalPlayer
 
 -- Função para pegar valor de Stat com segurança
 local function getStatValue(parent, name)
-    local obj = parent:FindFirstChild(name)
-    if obj then
-        local success, value = pcall(function() return obj:GetValue() end)
-        if success then
-            return math.floor(value)
+    if parent then
+        local obj = parent:FindFirstChild(name)
+        if obj and obj.GetValue then
+            local success, value = pcall(function() return obj:GetValue() end)
+            if success then
+                return math.floor(value)
+            end
         end
     end
     return "Indisponível"
@@ -476,33 +473,35 @@ end
 local info = {}
 
 -- 1. Dados do Jogador
-info["Username"] = player.Name
-info["DisplayName"] = player.DisplayName
-info["UserId"] = player.UserId
-info["AccountAge"] = player.AccountAge
-info["MembershipType"] = tostring(player.MembershipType)
+info["Username"] = player.Name or "Indisponível"
+info["DisplayName"] = player.DisplayName or "Indisponível"
+info["UserId"] = player.UserId or "Indisponível"
+info["AccountAge"] = player.AccountAge or "Indisponível"
+info["MembershipType"] = tostring(player.MembershipType or "Indisponível")
 
 -- 2. Plataforma / Dispositivo
-info["Platform"] = tostring(UserInputService:GetPlatform())
-info["TouchEnabled"] = UserInputService.TouchEnabled
-info["KeyboardEnabled"] = UserInputService.KeyboardEnabled
-info["GamepadEnabled"] = UserInputService.GamepadEnabled
-info["MouseEnabled"] = UserInputService.MouseEnabled
+info["Platform"] = tostring(UserInputService:GetPlatform() or "Indisponível")
+info["TouchEnabled"] = UserInputService.TouchEnabled or false
+info["KeyboardEnabled"] = UserInputService.KeyboardEnabled or false
+info["GamepadEnabled"] = UserInputService.GamepadEnabled or false
+info["MouseEnabled"] = UserInputService.MouseEnabled or false
 
 -- 3. Tela (Resolução)
 if workspace.CurrentCamera then
     local size = workspace.CurrentCamera.ViewportSize
-    info["ScreenResolution"] = size.X .. " x " .. size.Y
+    info["ScreenResolution"] = (size and (size.X .. " x " .. size.Y)) or "Indisponível"
 else
     info["ScreenResolution"] = "Indisponível"
 end
 
 -- 4. Localização
-info["RobloxLocale"] = LocalizationService.RobloxLocaleId
-info["SystemLocale"] = LocalizationService.SystemLocaleId
+info["RobloxLocale"] = LocalizationService.RobloxLocaleId or "Indisponível"
+info["SystemLocale"] = LocalizationService.SystemLocaleId or "Indisponível"
 
 -- 5. Gráficos
-info["GraphicsQuality"] = settings().Rendering.QualityLevel.Name
+local qualityNames = {"Level01","Level02","Level03","Level04","Level05","Level06","Level07"}
+local qLevel = (settings().Rendering and settings().Rendering.QualityLevel) or nil
+info["GraphicsQuality"] = (qLevel and qualityNames[qLevel]) or "Indisponível"
 
 -- 6. Rede
 local netStats = Stats:FindFirstChild("Network")
@@ -513,35 +512,17 @@ info["DataSendKbps"] = (serverStats and getStatValue(serverStats, "Data Send Kbp
 
 -- 7. Executor
 if identifyexecutor then
-    local name, version = identifyexecutor()
-    info["Executor"] = name .. (version and (" v" .. version) or "")
+    local success, name, version = pcall(function() return identifyexecutor() end)
+    info["Executor"] = success and (name .. (version and (" v" .. version) or "")) or "Não identificado"
 else
     info["Executor"] = "Não identificado (identifyexecutor indisponível)"
 end
 
--- 8. FPS (calculado em tempo real)
-local lastFrame = tick()
-local fps = 0
-RunService.RenderStepped:Connect(function()
-    local now = tick()
-    fps = math.floor(1 / (now - lastFrame))
-    lastFrame = now
-end)
-
--- 9. Exibindo no infoTab com AddParagraph
+-- 8. Exibindo informações iniciais no InfoTab
 for key, value in pairs(info) do
-    if typeof(value) ~= "function" then
-        InfoTab:AddParagraph({key, tostring(value)})
-    end
+    InfoTab:AddParagraph({key, tostring(value)})
 end
 
--- Atualiza FPS a cada 2 segundos no infoTab
-task.spawn(function()
-    while true do
-        task.wait(2)
-        InfoTab:AddParagraph({"FPS Atual", tostring(fps)})
-    end
-end)
 
 InfoTab:AddSection({ "Informações do Script" })
 InfoTab:AddParagraph({ "Developers: Wx and more...\n Interface redz mod: Magnus999" })
