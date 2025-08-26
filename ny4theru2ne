@@ -539,7 +539,7 @@ end
 task.spawn(function()
     while true do
         task.wait(2)
-        infoTab:AddParagraph({"FPS Atual", tostring(fps)})
+        InfoTab:AddParagraph({"FPS Atual", tostring(fps)})
     end
 end)
 
