@@ -446,7 +446,102 @@ Window:AddMinimizeButton({
 
 local InfoTab = Window:MakeTab({ Title = "Info", Icon = "rbxassetid://10723415903" })
 
+InfoTab:AddSection({ "Informações do Jogador" })
 
+--[[
+ Script: Informações do Cliente + Executor em parágrafos (infoTab:AddParagraph)
+ Mostra todas as informações disponíveis via APIs oficiais
+]]
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Stats = game:GetService("Stats")
+local UserInputService = game:GetService("UserInputService")
+local LocalizationService = game:GetService("LocalizationService")
+local player = Players.LocalPlayer
+
+-- Função para pegar valor de Stat com segurança
+local function getStatValue(parent, name)
+    local obj = parent:FindFirstChild(name)
+    if obj then
+        local success, value = pcall(function() return obj:GetValue() end)
+        if success then
+            return math.floor(value)
+        end
+    end
+    return "Indisponível"
+end
+
+-- Tabela de informações
+local info = {}
+
+-- 1. Dados do Jogador
+info["Username"] = player.Name
+info["DisplayName"] = player.DisplayName
+info["UserId"] = player.UserId
+info["AccountAge"] = player.AccountAge
+info["MembershipType"] = tostring(player.MembershipType)
+
+-- 2. Plataforma / Dispositivo
+info["Platform"] = tostring(UserInputService:GetPlatform())
+info["TouchEnabled"] = UserInputService.TouchEnabled
+info["KeyboardEnabled"] = UserInputService.KeyboardEnabled
+info["GamepadEnabled"] = UserInputService.GamepadEnabled
+info["MouseEnabled"] = UserInputService.MouseEnabled
+
+-- 3. Tela (Resolução)
+if workspace.CurrentCamera then
+    local size = workspace.CurrentCamera.ViewportSize
+    info["ScreenResolution"] = size.X .. " x " .. size.Y
+else
+    info["ScreenResolution"] = "Indisponível"
+end
+
+-- 4. Localização
+info["RobloxLocale"] = LocalizationService.RobloxLocaleId
+info["SystemLocale"] = LocalizationService.SystemLocaleId
+
+-- 5. Gráficos
+info["GraphicsQuality"] = settings().Rendering.QualityLevel.Name
+
+-- 6. Rede
+local netStats = Stats:FindFirstChild("Network")
+local serverStats = netStats and netStats:FindFirstChild("ServerStatsItem")
+info["Ping"] = (serverStats and getStatValue(serverStats, "Data Ping") .. " ms") or "Indisponível"
+info["DataReceiveKbps"] = (serverStats and getStatValue(serverStats, "Data Receive Kbps")) or "Indisponível"
+info["DataSendKbps"] = (serverStats and getStatValue(serverStats, "Data Send Kbps")) or "Indisponível"
+
+-- 7. Executor
+if identifyexecutor then
+    local name, version = identifyexecutor()
+    info["Executor"] = name .. (version and (" v" .. version) or "")
+else
+    info["Executor"] = "Não identificado (identifyexecutor indisponível)"
+end
+
+-- 8. FPS (calculado em tempo real)
+local lastFrame = tick()
+local fps = 0
+RunService.RenderStepped:Connect(function()
+    local now = tick()
+    fps = math.floor(1 / (now - lastFrame))
+    lastFrame = now
+end)
+
+-- 9. Exibindo no infoTab com AddParagraph
+for key, value in pairs(info) do
+    if typeof(value) ~= "function" then
+        InfoTab:AddParagraph({key, tostring(value)})
+    end
+end
+
+-- Atualiza FPS a cada 2 segundos no infoTab
+task.spawn(function()
+    while true do
+        task.wait(2)
+        infoTab:AddParagraph({"FPS Atual", tostring(fps)})
+    end
+end)
 
 InfoTab:AddSection({ "Informações do Script" })
 InfoTab:AddParagraph({ "Developers: Wx and more...\n Interface redz mod: Magnus999" })
