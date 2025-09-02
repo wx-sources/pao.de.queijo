@@ -1119,39 +1119,7 @@ local args2 = { 6, "001_Landmark" }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Lot:BuildProperty"):FireServer(unpack(args2))
 end
 })
-TrollTab:AddButton({
-    Name = "[🛒] Atrapalhar Supermercado (não visual)",
-    Description = "Se não funcionar, chegue na casa 6 bem perto do botão de pegar casa.",
-    Callback = function()
--- LocalScript
 
-local player = game.Players.LocalPlayer
-local targetPosition = Vector3.new(-37, 19, -145)
-
--- Espera o personagem e humanoide
-if not player.Character or not player.Character:FindFirstChild("Humanoid") then
-    player.CharacterAdded:Wait()
-end
-
-local character = player.Character
-local humanoid = character:WaitForChild("Humanoid")
-
--- 1. Move o personagem até a posição
-humanoid:MoveTo(targetPosition)
-
--- Aguarda chegar antes de executar os remotes
-humanoid.MoveToFinished:Wait()
-
--- 2. Invoca os remotes após chegar
--- Lot:Claim
-local args1 = { 6 }
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Lot:Claim"):InvokeServer(unpack(args1))
-
--- Lot:BuildProperty
-local args2 = { 6, "052_House" }
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Lot:BuildProperty"):FireServer(unpack(args2))
-end
-})
 TrollTab:AddParagraph({ "Se quiser remover a Factory, delete sua casa!" })
 
 TrollTab:AddSection({ "Black Hole" })
@@ -11537,6 +11505,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/SAZXHUB/Control-update/main/README.md", true))()
     end
 })
+
 
 
 
