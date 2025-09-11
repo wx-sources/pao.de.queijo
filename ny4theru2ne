@@ -8526,7 +8526,7 @@ for _, btn in ipairs(teleportButtons) do
 end
 
 
-local ToolsTab = Window:MakeTab({"Itens", "backpack"})
+local ToolsTab = Window:MakeTab({"Itens [ Update! ]", "backpack"})
 
 
     
@@ -8581,102 +8581,94 @@ Section = ToolsTab:AddSection({
                           
 -- Botão para Fire N4zi
 ToolsTab:AddButton({
-    Name = "(+13) Fire Alemanha nazista",
+    Name = "Super Aura Smoke [ NEW ! ]",
+    Description = "A aura vai aparecer se vc segurar a tela, aí a fumaça vai aparecendo!"
     Callback = function()
-        local nametools = "crystal nazi lel"
-        local oldcframe = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Dupe Script",
-            Text = "Please do not equip any tools or unequip tools or click tools on inventory. It will break the script.",
-            Button1 = "I understand",
-            Duration = 5
-        })
-        local toolthatiwanttodupe = "PaperbagFire"
-        local tools = "PaperbagFire"
-        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then
-            task.wait()
-            game.Players.LocalPlayer.Character.Humanoid.Sit = false
-        end
-        wait(0.1)
-        local args = {
-            [1] = "ClearAllTools"
-        }
-        cleartoolremote:FireServer(unpack(args))
-        if game:GetService("Workspace"):FindFirstChild("Camera") then
-            game:GetService("Workspace"):FindFirstChild("Camera"):Destroy()
-        end
-        for m = 1, 2 do
-            task.wait()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(999999999.414, -490, 999999999.414, 0.974360406, -0.175734088, 0.14049761, -0.133441404, 0.0514053069, 0.989722729, -0.181150302, -0.983094692, 0.0266370922)
-        end
-        task.wait(0.2)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
-        wait(0.3)
-        local duping = true
-        for m = 1, 57 do
-            if duping == false then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-                return
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Caminho do FireX
+local fireXPath = workspace:FindFirstChild("WorkspaceCom") 
+    and workspace.WorkspaceCom:FindFirstChild("001_GiveTools") 
+    and workspace.WorkspaceCom["001_GiveTools"]:FindFirstChild("FireX")
+
+local nametools = "crystal nazi lel"
+local oldcframe = LocalPlayer.Character.HumanoidRootPart.CFrame
+local attempts = 57
+local delayBetweenClicks = 0.3
+
+-- Grip e Handle
+local gripBase = CFrame.new(-0.290086746, 0.0755810738, -0.0109872818, 0.0439560413, 0.509705901, -0.859225094, -0.0591450632, -0.857220173, -0.511542261, -0.997281134, 0.0733042806, -0.00753343105)
+local handleOffset = CFrame.new(2, 1, -3)
+
+-- Velocidade absurda de rotação (sempre)
+local rotSpeed = math.rad(3600) -- 3600°/s
+
+-- Função de clique na ferramenta
+local function clickTool(object)
+    local clickDetector = object:FindFirstChildWhichIsA("ClickDetector")
+    if clickDetector then
+        fireclickdetector(clickDetector)
+    end
+end
+
+-- Configura Grip e Handle
+local function setupTool(tool)
+    tool.Grip = gripBase
+    tool.Name = nametools
+
+    local handle = tool:FindFirstChild("Handle")
+    if handle then
+        local weld = handle:FindFirstChildWhichIsA("Motor6D")
+        if weld then weld:Destroy() end
+
+        -- HandleOffset fixo
+        RunService.RenderStepped:Connect(function()
+            if handle.Parent == LocalPlayer.Character then
+                handle.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * handleOffset
             end
-            if game:GetService("Workspace"):FindFirstChild("Camera") then
-                game:GetService("Workspace"):FindFirstChild("Camera"):Destroy()
-            end
-            local args = {
-                [1] = "PickingTools",
-                [2] = toolthatiwanttodupe
-            }
-            picktoolremote:InvokeServer(unpack(args))
-            game:GetService("Players").LocalPlayer.Backpack:WaitForChild(toolthatiwanttodupe).Parent = game.Players.LocalPlayer.Character
-            if duping == false then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-                return
-            end
-            wait()
-            game:GetService("Players").LocalPlayer.Character[toolthatiwanttodupe]:FindFirstChild("Handle").Name = "Hândlê"
-            game:GetService("Players").LocalPlayer.Character:FindFirstChild(toolthatiwanttodupe).Parent = game.Players.LocalPlayer.Backpack
-            game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(toolthatiwanttodupe).Parent = game.Players.LocalPlayer.Character
-            repeat
-                if game:GetService("Workspace"):FindFirstChild("Camera") then
-                    game:GetService("Workspace"):FindFirstChild("Camera"):Destroy()
-                end
-                wait()
-            until game:GetService("Players").LocalPlayer.Character:FindFirstChild(toolthatiwanttodupe) == nil
+        end)
+    end
+
+    tool.Parent = LocalPlayer.Character
+end
+
+-- Rotação contínua infinita
+RunService.RenderStepped:Connect(function(deltaTime)
+    local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        hrp.CFrame = hrp.CFrame * CFrame.Angles(0, rotSpeed * deltaTime, 0)
+    end
+end)
+
+-- Função de duplicação do FireX
+local function dupeToolsFireX(fireXPath)
+    if not fireXPath then
+        warn("FireX não encontrado.")
+        return
+    end
+
+    local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    hrp.CFrame = fireXPath.CFrame
+
+    for i = 1, attempts do
+        clickTool(fireXPath)
+        task.wait(delayBetweenClicks)
+
+        local tool = LocalPlayer.Backpack:FindFirstChild("FireX")
+        if tool then
+            setupTool(tool)
         end
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-        repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") == nil
-        repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-        local toolgrip = true
-        duping = false
-        wait()
-        local gripBase = CFrame.new(-0.290086746, 0.0755810738, -0.0109872818, 0.0439560413, 0.509705901, -0.859225094, -0.0591450632, -0.857220173, -0.511542261, -0.997281134, 0.0733042806, -0.00753343105)
-        local gripPositions = {
-            Vector3.new(0, 0, 0), Vector3.new(0, 0.5, 0), Vector3.new(0, 1, 0), Vector3.new(0, 1.5, 0),
-            Vector3.new(0, 2, 0), Vector3.new(0, 2.5, 0), Vector3.new(0, 3, 0), Vector3.new(0, 3.5, 0),
-            Vector3.new(0, 4, 0), Vector3.new(0, 4.5, 0), Vector3.new(0, 5, 0), Vector3.new(0, 5, -1),
-            Vector3.new(0, 5, -2), Vector3.new(0, 5, -3), Vector3.new(0, 5, -4), Vector3.new(0, 5, -5),
-            Vector3.new(0, 5, -6), Vector3.new(0, 5, -7), Vector3.new(0, 5, -8), Vector3.new(0, 5, -9),
-            Vector3.new(0, 5, -10), Vector3.new(0, 5.5, -10), Vector3.new(0, 6, -10), Vector3.new(0, 6.5, -10),
-            Vector3.new(0, 7, -10), Vector3.new(0, 7.5, -10), Vector3.new(0, 8, -10), Vector3.new(0, 8.5, -10),
-            Vector3.new(0, 9, -10), Vector3.new(0, 9.5, -10), Vector3.new(0, 10, -10), Vector3.new(0, 10, -5),
-            Vector3.new(0, 10, -4.5), Vector3.new(0, 10, -4), Vector3.new(0, 10, -3.5), Vector3.new(0, 10, -3),
-            Vector3.new(0, 10, -2.5), Vector3.new(0, 10, -2), Vector3.new(0, 10, -1.5), Vector3.new(0, 10, -1),
-            Vector3.new(0, 10, -0.5), Vector3.new(0, 10, 0), Vector3.new(0, 9, -5), Vector3.new(0, 8, -5),
-            Vector3.new(0, 7, -5), Vector3.new(0, 6, -5), Vector3.new(0, 5, -5), Vector3.new(0, 4, -5),
-            Vector3.new(0, 3, -5), Vector3.new(0, 2, -5), Vector3.new(0, 1, -5), Vector3.new(0, 0, -5),
-            Vector3.new(0, 0, -10), Vector3.new(0, 0, -9), Vector3.new(0, 0, -8), Vector3.new(0, 0, -7),
-            Vector3.new(0, 0, -6)
-        }
-        for _, pos in ipairs(gripPositions) do
-            game.Players.LocalPlayer.Backpack[tools].Grip = gripBase + pos
-            game.Players.LocalPlayer.Backpack[tools].Name = nametools
-        end
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = oldcframe
-        wait(0.5)
-        for _, tool in ipairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool.Name == nametools then
-                tool.Parent = game:GetService("Players").LocalPlayer.Character
-            end
-        end
+    end
+
+    hrp.CFrame = oldcframe
+end
+
+-- Executa o dupe
+dupeToolsFireX(fireXPath)
     end
 })
             
@@ -8703,6 +8695,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+
 
 
 
