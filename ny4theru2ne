@@ -8582,7 +8582,7 @@ Section = ToolsTab:AddSection({
 -- Botão para Fire N4zi
 ToolsTab:AddButton({
     Name = "Super Aura Smoke [ NEW ! ]",
-    Description = "A aura vai aparecer se vc segurar a tela, aí a fumaça vai aparecendo!"
+    Description = "A aura vai aparecer se vc segurar a tela, aí a fumaça vai aparecendo!",
     Callback = function()
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -8695,6 +8695,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+
 
 
 
