@@ -1084,7 +1084,7 @@ end
 })
 
 local TrollTab = Window:MakeTab({ Title = "Scripts Trolls", Icon = "rbxassetid://13364900349" })
-local Section = Tab1:AddSection({"Se quiser trocar a skybox, apenas mude sua camisa! (não é visual)"})
+local Section = TrollTab:AddSection({"Se quiser trocar a skybox, apenas mude sua camisa! (não é visual)"})
 TrollTab:AddButton({
    Name = "[🌫] Aplicar Skybox da sua camisa (não visual)",
    Callback = function()
@@ -8779,6 +8779,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+
 
 
 
