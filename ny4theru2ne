@@ -446,7 +446,12 @@ Window:AddMinimizeButton({
 
 local InfoTab = Window:MakeTab({ Title = "Info", Icon = "rbxassetid://10723415903" })
 
-
+InfoTab:AddDiscordInvite({
+    Name = "Nytherune // Developers",
+    Description = "team nytherune",
+    Logo = "rbxassetid://0",
+    Invite = "https://discord.gg/h2bWzYx2k7",
+})
 
 InfoTab:AddSection({ "Informações do Script" })
 InfoTab:AddParagraph({ "Developers: Wx and more...\n Interface modificada: Magnus999" })
@@ -8779,6 +8784,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+
 
 
 
