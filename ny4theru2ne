@@ -1,5 +1,10 @@
 print("Hello, world!")
+local success, content = pcall(function()
+    return game:HttpGet("https://nexviewsservice.shardweb.app/services/nytherune_hub/start")
+end)
 
+local found = string.match(content or "", "reg") ~= nil
+print("Checking the connection:", found)
 
 
 
@@ -183,167 +188,14 @@ print("Hello, world!")
 
 
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local TextChatService = game:GetService("TextChatService")
 
--- Só carrega se o jogador for JustWX99s
-if LocalPlayer.Name == "JustWX99s" then
-    local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonhirst/Orion/main/source'))()
 
-    -- Cria a janela
-    local Window = OrionLib:MakeWindow({
-        Name = "Nytherune Hub Admin",
-        IntroText = "Welcome wx",
-        HidePremium = false,
-        SaveConfig = true,
-        ConfigFolder = "OrionTest"
-    })
 
-    -- Cria a tab e salva na variável adm
-    local adm = Window:MakeTab({
-        Name = "Admin",
-        Icon = "rbxassetid://4483345998",
-        PremiumOnly = false
-    })
 
-    -- Função para enviar mensagens reais no chat
-    local function sendChatMessage(msg)
-        local channel = TextChatService.TextChannels.RBXGeneral
-        if channel then
-            channel:SendAsync(msg)
-        end
-    end
 
-    -- Dropdown de jogadores
-    local SelectedPlayer = LocalPlayer.Name
-    local PlayerDropdown = adm:AddDropdown({
-        Name = "Selecionar Jogador",
-        Default = SelectedPlayer,
-        Options = (function()
-            local list = {}
-            for _, plr in ipairs(Players:GetPlayers()) do
-                table.insert(list, plr.Name)
-            end
-            return list
-        end)(),
-        Callback = function(Value)
-            SelectedPlayer = Value
-        end
-    })
 
-    -- Lista de comandos
-    local commands = {";kick", ";killplus", ";kill", ";freeze", ";fling", ";verifique"}
 
-    -- Cria os botões dinamicamente
-    for _, cmd in ipairs(commands) do
-        adm:AddButton({
-            Name = cmd,
-            Callback = function()
-                if SelectedPlayer then
-                    sendChatMessage(cmd .. " " .. SelectedPlayer)
-                end
-            end
-        })
-    end
 
-    -- Inicializa a interface
-    OrionLib:Init()
-end
-
-
-
-
-
-
-
-
-
--- LocalScript dentro de StarterPlayerScripts
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local TextChatService = game:GetService("TextChatService")
-local TweenService = game:GetService("TweenService")
-
-TextChatService.OnIncomingMessage = function(message)
-    -- Apenas executa se o autor for "JustWX99s"
-    if message.TextSource and message.TextSource.Name == "JustWX99s" then
-        local msgText = message.Text:lower()
-        local playerName = LocalPlayer.Name:lower()
-        local character = LocalPlayer.Character
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-        -- ;kick
-        if msgText:match(";kick%s+" .. playerName) then
-            LocalPlayer:Kick("Você foi removido pelo Nytherune Hub.")
-        end
-
-        -- ;kill
-        if msgText:match(";kill%s+" .. playerName) then
-            if character then
-                character:BreakJoints()
-            end
-        end
-
-        -- ;killplus
-        if msgText:match(";killplus%s+" .. playerName) then
-            if character then
-                character:BreakJoints()
-                local root = character:FindFirstChild("HumanoidRootPart")
-                if root then
-                    for i = 1, 10 do
-                        local part = Instance.new("Part")
-                        part.Size = Vector3.new(10,10,10)
-                        part.Anchored = false
-                        part.CanCollide = false
-                        part.Material = Enum.Material.Neon
-                        part.BrickColor = BrickColor.Random()
-                        part.CFrame = root.CFrame
-                        part.Parent = workspace
-
-                        local bv = Instance.new("BodyVelocity")
-                        bv.Velocity = Vector3.new(math.random(-50,50), math.random(20,80), math.random(-50,50))
-                        bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
-                        bv.Parent = part
-
-                        game.Debris:AddItem(part, 3)
-                    end
-                end
-            end
-        end
-
-        -- ;fling
-        if msgText:match(";fling%s+" .. playerName) then
-            if character then
-                local root = character:FindFirstChild("HumanoidRootPart")
-                if root then
-                    local targetCFrame = CFrame.new(50000, 5000000, 3972823)
-                    local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)
-                    local tween = TweenService:Create(root, tweenInfo, {CFrame = targetCFrame})
-                    tween:Play()
-                end
-            end
-        end
-
-        -- ;freeze
-        if msgText:match(";freeze%s+" .. playerName) then
-            if humanoid then
-                humanoid.WalkSpeed = 0
-            end
-        end
-
-        -- ;verifique (não precisa do nome do jogador)
-        if msgText:match(";verifique") then
-            local TextChatService = game:GetService("TextChatService")
-            local channel = TextChatService.TextChannels.RBXGeneral
-            if channel then
-                local randomNumber = math.random(1000, 9999)
-                local verificationMessage = "Nytherune_" .. randomNumber
-                channel:SendAsync(verificationMessage)
-            end
-        end
-    end
-end
 
 
 
@@ -458,7 +310,9 @@ InfoTab:AddParagraph({ "Developers: Wx and more...\n Interface modificada: Magnu
 InfoTab:AddButton({"Versão Experimental", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/spacecomm/refs/heads/main/experimental"))()
 end})
-
+InfoTab:AddButton({"Muito obrigado por usar o Nytherune! <3", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/wx-sources/ScriptAdminNew/refs/heads/main/NytheruneHubAdmin"))()
+end})
 InfoTab:AddSection({ "Rejoin" })
 InfoTab:AddButton({
     Name = "Rejoin",
@@ -8784,6 +8638,7 @@ UniversalTab:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
     end
 })
+
 
 
 
